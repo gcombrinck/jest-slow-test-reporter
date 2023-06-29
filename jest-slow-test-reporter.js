@@ -1,3 +1,6 @@
+const fs = require("fs");
+const chalk = require("chalk");
+
 class JestSlowTestReporter {
     constructor(globalConfig, options) {
         this._globalConfig = globalConfig;
@@ -5,36 +8,48 @@ class JestSlowTestReporter {
         this._slowTests = [];
     }
 
-    onRunComplete() {
+    async onRunComplete() {
         console.log();
 
-        this._slowTests.sort(function(a, b) {
+        this._slowTests.sort(function (a, b) {
             return b.duration - a.duration;
         });
 
-        var rootPathRegex = new RegExp(`^${process.cwd()}`);
-        var slowestTests = this._slowTests.slice(0, (this._options.numTests || 10));
-        var slowTestTime = this._slowTestTime(slowestTests);
-        var allTestTime = this._allTestTime();
-        var percentTime = (slowTestTime / allTestTime) * 100;
+        let rootPathRegex = new RegExp(`^${process.cwd()}`);
+        let slowestTests = this._slowTests.slice(0, (this._options.numTests || 10));
+        let slowTestTime = this._slowTestTime(slowestTests);
+        let allTestTime = this._allTestTime();
+        let percentTime = (slowTestTime / allTestTime) * 100;
 
-        console.log(`Top ${slowestTests.length} slowest examples (${slowTestTime / 1000} seconds,`
-                    + ` ${percentTime.toFixed(1)}% of total time):`);
+        console.log(chalk.blueBright(`Top ${slowestTests.length} slowest examples (${slowTestTime / 1000} seconds,`
+            + ` ${percentTime.toFixed(1)}% of total time):`));
 
-        for (var i = 0; i < slowestTests.length; i++) {
-            var duration = slowestTests[i].duration;
-            var fullName = slowestTests[i].fullName;
-            var filePath = slowestTests[i].filePath.replace(rootPathRegex, '.');
-
+        let slowList = []
+        for (let i = 0; i < slowestTests.length; i++) {
+            let duration = slowestTests[i].duration;
+            let fullName = slowestTests[i].fullName;
+            let filePath = slowestTests[i].filePath.replace(rootPathRegex, '.');
             console.log(`  ${fullName}`);
-            console.log(`    ${duration / 1000} seconds ${filePath}`);
+            console.log(chalk.yellowBright(`    ${duration / 1000} seconds`)+` ${filePath}`);
+            if (this._options.warnOnSlowerThan && slowestTests[i].duration > this._options.warnOnSlowerThan) {
+                let data = {
+                    duration,
+                    fullName,
+                    filePath
+                }
+                slowList.push(data)
+            }
         }
+        await fs.writeFileSync(
+            this._options.outputFile,
+            JSON.stringify(slowList, null, 2)
+        );
 
         console.log();
     }
 
     onTestResult(test, testResult) {
-        for (var i = 0; i < testResult.testResults.length; i++) {
+        for (let i = 0; i < testResult.testResults.length; i++) {
             this._slowTests.push({
                 duration: testResult.testResults[i].duration,
                 fullName: testResult.testResults[i].fullName,
@@ -42,7 +57,7 @@ class JestSlowTestReporter {
             });
 
             if (this._options.warnOnSlowerThan && testResult.testResults[i].duration > this._options.warnOnSlowerThan) {
-                var warnString = `${testResult.testResults[i].fullName} ran in ${testResult.testResults[i].duration}ms`;
+                let warnString = `${testResult.testResults[i].fullName} ran in ${testResult.testResults[i].duration}ms`;
                 if (this._options.color) {
                     warnString = `\x1b[31m${warnString}\x1b[0m`;
                 }
@@ -52,16 +67,16 @@ class JestSlowTestReporter {
     }
 
     _slowTestTime(slowestTests) {
-        var slowTestTime = 0;
-        for (var i = 0; i < slowestTests.length; i++) {
+        let slowTestTime = 0;
+        for (let i = 0; i < slowestTests.length; i++) {
             slowTestTime += slowestTests[i].duration;
         }
         return slowTestTime;
     }
 
     _allTestTime() {
-        var allTestTime = 0;
-        for (var i = 0; i < this._slowTests.length; i++) {
+        let allTestTime = 0;
+        for (let i = 0; i < this._slowTests.length; i++) {
             allTestTime += this._slowTests[i].duration;
         }
         return allTestTime;
