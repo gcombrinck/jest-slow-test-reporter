@@ -25,7 +25,7 @@ module.exports = {
   ]
 };
 ```
-
+### Available Options
 `outputFile:` path to save output file.<br/>
 `numTests:` controls how many slow tests to print.<br/>
 `warnOnSlowerThan:` will warn when a test exceeds this time in milliseconds.<br/>
