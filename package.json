@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/jodonnell/jest-slow-test-reporter/issues"
   },
-  "homepage": "https://github.com/jodonnell/jest-slow-test-reporter#readme"
+  "homepage": "https://github.com/jodonnell/jest-slow-test-reporter#readme",
+  "dependencies": {
+    "chalk": "^5.3.0"
+  }
 }

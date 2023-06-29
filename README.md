@@ -1,6 +1,6 @@
 # Slow test reporter for jest( Saving to file and Printing to screen)
 
-No dependencies, no interactive shell needed.  Prints out the slowest 10 tests in your app.  Can also print warnings when a test exceeds X ms.
+This code will report the slowest tests in your Jest suite, along with their duration and file path. It will also warn you if any tests are running slower than a specified threshold. You can configure the number of slowest tests to report, the output file, and the threshold for warning about slow tests by passing options to the JestSlowTestReporter constructor.
 
 ## Installation
 
@@ -21,12 +21,12 @@ For example, create a `jest.config.js` file containing:
 module.exports = {
   verbose: false,
   reporters: [
-    ['jest-slow-test-reporter', {"output": "path/to/file", "numTests": 8, "warnOnSlowerThan": 300, "color": true}]
+    ['jest-slow-test-reporter', {"outputFile": "path/to/file", "numTests": 8, "warnOnSlowerThan": 300, "color": true}]
   ]
 };
 ```
 
-output: path to save output file
-numTests: controls how many slow tests to print.
-warnOnSlowerThan: will warn when a test exceeds this time in milliseconds.
-color: will make the warnOnSlowerThan warning messages print in red
+outputFile: path to save output file.<br/>
+numTests: controls how many slow tests to print.<br/>
+warnOnSlowerThan: will warn when a test exceeds this time in milliseconds.<br/>
+color: will make the warnOnSlowerThan warning messages print in red.<br/>

@@ -24,26 +24,20 @@ class JestSlowTestReporter {
         console.log(chalk.blueBright(`Top ${slowestTests.length} slowest examples (${slowTestTime / 1000} seconds,`
             + ` ${percentTime.toFixed(1)}% of total time):`));
 
-        let slowList = []
         for (let i = 0; i < slowestTests.length; i++) {
             let duration = slowestTests[i].duration;
             let fullName = slowestTests[i].fullName;
             let filePath = slowestTests[i].filePath.replace(rootPathRegex, '.');
             console.log(`  ${fullName}`);
             console.log(chalk.yellowBright(`    ${duration / 1000} seconds`)+` ${filePath}`);
-            if (this._options.warnOnSlowerThan && slowestTests[i].duration > this._options.warnOnSlowerThan) {
-                let data = {
-                    duration,
-                    fullName,
-                    filePath
-                }
-                slowList.push(data)
-            }
         }
-        await fs.writeFileSync(
-            this._options.outputFile,
-            JSON.stringify(slowList, null, 2)
-        );
+
+        if (this._options.outputFile) {
+            await fs.writeFileSync(
+                this._options.outputFile,
+                JSON.stringify(slowestTests, null, 2)
+            );
+        }
 
         console.log();
     }
