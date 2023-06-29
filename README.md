@@ -26,7 +26,7 @@ module.exports = {
 };
 ```
 
-outputFile: path to save output file.<br/>
-numTests: controls how many slow tests to print.<br/>
-warnOnSlowerThan: will warn when a test exceeds this time in milliseconds.<br/>
-color: will make the warnOnSlowerThan warning messages print in red.<br/>
+`outputFile:` path to save output file.<br/>
+`numTests:` controls how many slow tests to print.<br/>
+`warnOnSlowerThan:` will warn when a test exceeds this time in milliseconds.<br/>
+`color:` will make the warnOnSlowerThan warning messages print in red.<br/>
