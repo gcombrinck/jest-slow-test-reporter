@@ -27,6 +27,6 @@ module.exports = {
 ```
 ### Available Options
 `outputFile:` path to save output file.<br/>
-`numTests:` controls how many slow tests to print.<br/>
+`numTests:` controls how many slow tests to print. default=10<br/>
 `warnOnSlowerThan:` will warn when a test exceeds this time in milliseconds.<br/>
 `color:` will make the warnOnSlowerThan warning messages print in red.<br/>
